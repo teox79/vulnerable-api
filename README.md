@@ -46,6 +46,19 @@ Elenco atteso dei finding (usalo per verificare scanner + lifecycle):
 | 6 | app/files.py | Path traversal (`path`) | CWE-22 | A01 |
 | 7 | app/exec.py | Command injection (`host` in os.popen) | CWE-78 | A03 |
 | 8 | app/deserialize.py | Deserializzazione insicura (pickle.loads) | CWE-502 | A08 |
+| 9 | app/config_loader.py | YAML load insicuro (`yaml.load` senza SafeLoader) | CWE-502 | A08 |
+
+### Dipendenze vulnerabili (SCA)
+Pinnate in `requirements.txt` a versioni con CVE note:
+
+| Pacchetto | Versione | CVE note |
+|-----------|----------|----------|
+| requests | 2.19.1 | CVE-2018-18074 (leak credenziali su redirect) |
+| PyYAML | 5.1 | CVE-2020-1747, CVE-2020-14343 (RCE via `yaml.load`) |
+| urllib3 | 1.24.1 | CVE-2019-11324, CVE-2019-11236 (CRLF / verifica cert) |
+
+`PyYAML` è anche usato in modo insicuro in `config_loader.py` (finding #9):
+SCA + SAST sullo stesso pacchetto.
 
 ### Caso DEDUP cross-file
 I finding **1/2/3** condividono la stessa root cause: uso non parametrizzato di
